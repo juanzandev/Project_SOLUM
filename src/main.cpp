@@ -214,7 +214,38 @@ void setup()
 	Serial.begin(SERIAL_BAUD);
 	while (!Serial)
 		;
-	
+	// PSEUDO CODE
+	// Menu:
+	/*
+	Main Screen
+		Sections:
+			Sensor List
+			Add sensor
+			Remove sensor
+			Settings
+	Sensor List:
+		Sections:
+			Sensors...
+				On Action (Select):
+					Sensor menu:
+						Sections:
+							Information: Displays general information about the sensor such as measurement type,
+							communication protocol, energy consumption, cable number and colors
+							Configuration: Lets the user set the measurement frequency and the upload frequency to the station
+							Measurement type: Detailed measurement type
+							Take measurement: Takes measurement and displays it on the screen
+
+	Add sensor
+		Sections:
+			Sensor list
+				On Action (Select):
+					Supported sensor list...
+						On Action (Select):
+							Display setup information
+
+
+
+	*/
 	// INITIALIZES, CREATES A FILE IN THE SD CARD, WRITES THE TITLE FOR EACH OF THE
 	// DATA TYPES THAT WILL BE WRITTEN IN THE FILE, AND CLOSES THE FILE.
 	Serial.println("Initializing SD Card...");
