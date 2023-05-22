@@ -215,37 +215,264 @@ void setup()
 	while (!Serial)
 		;
 	// PSEUDO CODE
-		// Menu:
-		/*
-		Main Screen
-			Sections:
-				Sensor List
-				Add sensor
-				Remove sensor
-				Settings
-		Sensor List:
-			Sections:
-				Sensors...
+	// Menu:
+	/*
+	Main Screen
+		Sections:
+			+ Sensor List
+			+Add sensor
+			+Remove sensor
+			+Settings
+	Sensor List:
+		Sections:
+			+Sensors...
+				On Action (Select):
+					Sensor menu:
+						Sections:
+							+Information: Displays general information about the sensor such as measurement type,
+							communication protocol, energy consumption, cable number and colors
+							+Configuration: Lets the user set the measurement frequency and the upload frequency to the station
+							+Measurement type: Detailed measurement type
+							+Take measurement: Takes measurement and displays it on the screen
+
+	Add sensor
+		Sections:
+			+Sensor list
+				On Action (Select):
+					Supported sensor list...
+						On Action (Select):
+							Display setup information
+	Remove sensor
+		Sections:
+			+Active Sensor list
+				On Action (Select):
+					Confirmation screen
+						Sections:
+							+Remove sensor?
+							+
+							+Yes
+								On Action(Select Button 3):
+									Removes sensor
+							No
+								On Action(Select Button 4):
+									Cancels removal
+	Settings
+		Sections:
+			+Battery
+				+Battery Level (display here)
+				+Battery Mode
 					On Action (Select):
-						Sensor menu:
-							Sections:
-								Information: Displays general information about the sensor such as measurement type, 
-								communication protocol, energy consumption, cable number and colors
-								Configuration: Lets the user set the measurement frequency and the upload frequency to the station
-								Measurement type: Detailed measurement type
-								Take measurement: Takes measurement and displays it on the screen
-							
-		Add sensor
-			Sections:
-				Sensor list
-					On Action (Select):
-						Supported sensor list...
+						+Standard
+						+Battery Saving
 							On Action (Select):
-								Display setup information
-								
-		
-		
-		*/
+								+Warning: Low battery
+								+mode restricts the
+								+amount of sensors
+								+that can be used
+									On Action (Select Button 1):
+										Confirm
+									On Action (Select Button 2):
+										Cancel
+			+Profiles
+				On Action (Select):
+					+Create profile: saves the current list of sensors and configurations
+						On Action (Select Button 2):
+							+Create profile?
+							+
+							+Yes
+							+No
+					+Delete profile
+						On Action (Select Button 3):
+							+Delete profile?
+							+
+							+Yes
+								On Action(Select Button 3):
+									Creates profile
+							+No
+								On Action(Select Button 4):
+									Cancels profile creation
+					+Options
+						Sections:
+							+Select Profile
+								On Action(Select Button 1):
+									+Profile 1
+									+Profile 2
+									+Profile 3
+									+Profile 4
+							+Import Profile
+								On Action(Select Button 2):
+									+Add profile file -- Screen will stay for x amount of time
+									+in the profile
+									+folder in the
+									+SD Card...
+								After time:
+									+The file should be -- Screen will stay for x amount of time
+									+called
+									+"profile_x.csv"
+								After time 2 (If file found):
+									+Profile found!
+									+Add profile?
+
+									+Yes
+										On Action(Select Button 3):
+											(Scans file and checks if its the right information):
+												+Profile Added! -- 	Screen will stay for x amount of time
+																	and will return to Profiles menu
+											(If information is not right):
+												+The Profile file -- Screen will stay for x amount of time
+																	and will return to Profiles menu
+												+is not correct
+												+Check the resources
+												+and try again...
+
+
+									+No
+										On Action(Select Button 4):
+											Cancels addition
+							+Export Profile
+								On Action (Select Button 3):
+									+Profile saved in --	Screen will stay for x amount of time
+														and will return to Profiles menu
+									+SD Card as..
+									+"saved_profile_x.csv"
+			+Connectivity
+				+Node Connection
+					On Action (Select Button 1):
+						+Connect to Node
+							On Action (Select Button 1):
+								+Searching for nodes... --	Screen will stay for x amount of time
+															and it will return a found node list
+															or it will return that no nodes were found
+								After wait (Sensors found):
+									+Sensor 1
+										On Action (Select Button x):
+											+Sensor ID: ........
+											+Location
+												On Action (Select Button 2):
+													+lat: ..........
+													+long: .........
+											+Pair node
+												On Action (Select Button 3):
+													+Pair with node
+													+[ID]?
+													+Yes
+														On Action (Select Button 3):
+															Tries to pair with node...
+															If pairing was unsuccessful.
+																+Could not pair with
+																+node [ID]. Try again?
+																+Yes
+																+No
+															If pairing was successful/
+																+Nodes Paired!
+																+Node [ID] (current)
+																+paired with
+																+Node [ID]
+													+No
+									+Sensor 2
+									+Sensor 3
+									+Sensor 4
+								After wait (No sensors found):
+									+No nodes were found.
+									+Please try again and
+									+make sure your node is
+									+connected
+						+Disconnect from Node
+							On Action (Select Button 2):
+								+Node 1: [ID]
+									On Action (Select Button x):
+										+Disconnect from node
+										+[ID] ?
+										+Yes
+											On Action (Button 3):
+												+Disconnecting...
+												If disconnection is unsuccessful
+													+Unable to disconnect
+													+from node [ID]
+													+Try Again? Yes
+												No
+										No
+								+Node 2: [ID]
+								+Node 3: [ID]
+								+Node 4: [ID]
+						+Paired nodes
+							On Action (Button 3)
+								+Connected nodes' list
+									On Action (Select Button x):
+										+Node Information
+											On Action (Select Button 1):
+												+Location
+												+Battery Level
+												+Active sensors
+
+				+Station Connection
+					On Action (Select Button 2):
+						+Connect to Station
+							On Action (Select Button 1):
+								+Searching for -- 	Screen will stay for x amount of time
+													and it will return a found station list
+													or it will return that no stations were found
+								+stations...
+								If station/s found
+									+Station 1: [ID]
+										On Action (Select Button x):
+											+Connect to station
+											+[ID] ?
+											+Yes
+												On action (Select Button 3):
+													+Connecting to
+													+station [ID]...
+														If connection successful
+															+Successfully connected
+															+to station
+															+[ID].
+														Else
+															+Connection failed
+															+Try again?
+															+Yes
+															+No
+											No
+									+Station 2: [ID]
+									+Station 3: [ID]
+									+Station 4: [ID]
+						Disconnect from Station
+							On Action (Select Button 3):
+								Connected station list
+									+Station 1: [ID]
+										On Action (Select Button x):
+											+Disconnect from
+											+station [ID]?
+											+Yes
+											+No
+									+Station 2: [ID]
+									+Station 3: [ID]
+									+Station 4: [ID]
+
+						Paired Stations List
+							On Action (Select Button 3):
+								+Station 1: [ID]
+									On Action (Select Button x):
+										+Station [ID]
+										+Configuration
+										+Connected Nodes
+								+Station 2: [ID]
+								+Station 3: [ID]
+								+Station 4: [ID]
+				+Data chip
+					On Action (Select Button 2):
+						+Company: [Company]
+						+Check Internet
+			+Node Location
+				On Action (Select Button 4):
+					+Node [ID]
+					+Lat: [Latitude]
+					+Long: [Longitude]
+
+
+
+
+
+	*/
 	// INITIALIZES, CREATES A FILE IN THE SD CARD, WRITES THE TITLE FOR EACH OF THE
 	// DATA TYPES THAT WILL BE WRITTEN IN THE FILE, AND CLOSES THE FILE.
 	Serial.println("Initializing SD Card...");
