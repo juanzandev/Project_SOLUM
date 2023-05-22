@@ -215,6 +215,7 @@ void setup()
 	while (!Serial)
 		;
 	// PSEUDO CODE
+	// NOTE: Pluses (+) represent a 4x20 lcd screen. Extra resources at Project_SOLUM/menu_files/
 	// Menu:
 	/*
 	Main Screen
