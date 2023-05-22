@@ -240,21 +240,53 @@ void setup()
 		Sections:
 			+Sensor list
 				On Action (Select):
-					Supported sensor list...
-						On Action (Select):
-							Display setup information
+					Measurement Type List
+						+Soil Moisture
+						+Soil Temperature
+						+Wind Speed
+						+Water Table
+							On Action (Select Button x):
+								Sensor List...
+									+[Supported Sensor] 1
+										On Action (Select Button x):
+											+Information: 	Displays general information about the sensor such as measurement type,
+															communication protocol, energy consumption, cable number and colors
+											+Set Up Instructions
+												On Action (Select Button 1):
+													+Step 1:.......
+														+Step 2:......
+															+Step 3:.....
+											+Add Sensor
+												On Action (Select Button 2):
+													+Adding sensor
+													+[Sensor Name]
+													+and taking
+													+measurement...
+														If addition is successful:
+															+Successfully added:
+															+[Sensor Name]
+															+MT: [Measurement Type]
+															+Measurement: [Info]
+														Else
+															+Could not add sensor
+															+[Sensor Name]
+															+Go to {Set Up
+															+Instructions}...
+									+[Supported Sensor] 2
+									+[Supported Sensor] 3
+									+[Supported Sensor] 4
 	Remove sensor
 		Sections:
 			+Active Sensor list
 				On Action (Select):
 					Confirmation screen
 						Sections:
-							+Remove sensor?
-							+
+							+Remove sensor
+							+[Sensor Name]?
 							+Yes
 								On Action(Select Button 3):
 									Removes sensor
-							No
+							+No
 								On Action(Select Button 4):
 									Cancels removal
 	Settings
@@ -266,14 +298,18 @@ void setup()
 						+Standard
 						+Battery Saving
 							On Action (Select):
-								+Warning: Low battery
+								+Warning: Battery Saving
 								+mode restricts the
 								+amount of sensors
 								+that can be used
-									On Action (Select Button 1):
-										Confirm
-									On Action (Select Button 2):
-										Cancel
+									After x amount of time:
+										Activate Low
+										Battery Mode?
+										Yes
+											On Action(Select Button 3):
+												Low Battery Mode
+												has been activated.
+										No
 			+Profiles
 				On Action (Select):
 					+Create profile: saves the current list of sensors and configurations
@@ -292,11 +328,14 @@ void setup()
 							+No
 								On Action(Select Button 4):
 									Cancels profile creation
-					+Options
+					+ Profile Options
 						Sections:
 							+Select Profile
 								On Action(Select Button 1):
 									+Profile 1
+										On Action (Select Button x):
+											Profile x has been
+											selected.
 									+Profile 2
 									+Profile 3
 									+Profile 4
@@ -310,11 +349,57 @@ void setup()
 									+The file should be -- Screen will stay for x amount of time
 									+called
 									+"profile_x.csv"
-								After time 2 (If file found):
+								After time 2 (If 1 file found):
 									+Profile found!
-									+Add profile?
+									+Add [Profile Name]?
 
 									+Yes
+									On Action(Select Button 3):
+											(Scans file and checks if its the right information):
+												+Profile Added! -- 	Screen will stay for x amount of time
+																	and will return to Profiles menu
+											(If information is not right):
+												+The Profile file -- Screen will stay for x amount of time
+																	and will return to Profiles menu
+												+is not correct
+												+Check the resources
+												+and try again...
+
+
+									+No
+										On Action(Select Button 4):
+											Cancels addition
+								After time 2 (If 1+ file found):
+									+Multiple profiles
+									+have been found...
+									+Choose a profile
+									+from the list.
+										After time 3:
+											+profile_x.csv
+											+profile_y.csv
+											+profile_z.csv
+											+profile_a.csv
+											On Action (Select Button x):
+												+Add profile
+												+[Profile Name]?
+												+Yes
+												+No
+												On Action(Select Button 3):
+											(Scans file and checks if its the right information):
+												+Profile Added! -- 	Screen will stay for x amount of time
+																	and will return to Profiles menu
+											(If information is not right):
+												+The Profile file -- Screen will stay for x amount of time
+																	and will return to Profiles menu
+												+is not correct
+												+Check the resources
+												+and try again...
+
+
+									+No
+										On Action(Select Button 4):
+											Cancels addition
+
 										On Action(Select Button 3):
 											(Scans file and checks if its the right information):
 												+Profile Added! -- 	Screen will stay for x amount of time
@@ -332,10 +417,15 @@ void setup()
 											Cancels addition
 							+Export Profile
 								On Action (Select Button 3):
-									+Profile saved in --	Screen will stay for x amount of time
-														and will return to Profiles menu
-									+SD Card as..
-									+"saved_profile_x.csv"
+									Your current node
+									set up will be
+									stored in the
+									SD Card...
+									After time:
+										+Profile saved in --	Screen will stay for x amount of time
+															and will return to Profiles menu
+										+SD Card as..
+										+"saved_profile_x.csv"
 			+Connectivity
 				+Node Connection
 					On Action (Select Button 1):
@@ -345,17 +435,25 @@ void setup()
 															and it will return a found node list
 															or it will return that no nodes were found
 								After wait (Sensors found):
-									+Sensor 1
+									+Node 1
 										On Action (Select Button x):
-											+Sensor ID: ........
+											+Node ID: ........
 											+Location
 												On Action (Select Button 2):
-													+lat: ..........
-													+long: .........
+													Requesting
+													location of node
+													[Node ID]...
+													If request successful
+														+lat: ..........
+														+long: .........
+													Else
+														Failed request of
+														node [Node ID]
+														location.
 											+Pair node
 												On Action (Select Button 3):
 													+Pair with node
-													+[ID]?
+													+[Node ID]?
 													+Yes
 														On Action (Select Button 3):
 															Tries to pair with node...
@@ -370,9 +468,10 @@ void setup()
 																+paired with
 																+Node [ID]
 													+No
-									+Sensor 2
-									+Sensor 3
-									+Sensor 4
+											+Current ID: [Local Node ID]
+									+Node 2
+									+Node 3
+									+Node 4
 								After wait (No sensors found):
 									+No nodes were found.
 									+Please try again and
@@ -391,6 +490,11 @@ void setup()
 													+Unable to disconnect
 													+from node [ID]
 													+Try Again? Yes
+												Else
+													Successfully
+													disconnected
+													from 
+													[Node ID]
 												No
 										No
 								+Node 2: [ID]
@@ -403,8 +507,26 @@ void setup()
 										+Node Information
 											On Action (Select Button 1):
 												+Location
+													On Action (Select Button 1):
+														If request successful:
+															Lat: ------
+															Long: -----
+														Else:
+															Failed to request
+															[Node ID]
+															location.
 												+Battery Level
+													On Action (Select Button 2):
+														Battery Level
+														of [Node ID]
+														is xxx%.
 												+Active sensors
+													On Action (Select Button 3):
+														[Active Sensor] 1
+														[Active Sensor] 2
+														[Active Sensor] 3
+														[Active Sensor] 4
+													
 
 				+Station Connection
 					On Action (Select Button 2):
@@ -436,7 +558,7 @@ void setup()
 									+Station 2: [ID]
 									+Station 3: [ID]
 									+Station 4: [ID]
-						Disconnect from Station
+						+Disconnect from Station
 							On Action (Select Button 3):
 								Connected station list
 									+Station 1: [ID]
@@ -449,7 +571,7 @@ void setup()
 									+Station 3: [ID]
 									+Station 4: [ID]
 
-						Paired Stations List
+						+Paired Stations List
 							On Action (Select Button 3):
 								+Station 1: [ID]
 									On Action (Select Button x):
@@ -463,6 +585,18 @@ void setup()
 					On Action (Select Button 2):
 						+Company: [Company]
 						+Check Internet
+							On Action (Select Button 2):
+								Checking Internet
+								Connection...
+								After check:
+									If there is internet connection:
+										Successfully
+										connected to
+										the internet.
+									Else
+										Failed to
+										connect to the
+										internet.
 			+Node Location
 				On Action (Select Button 4):
 					+Node [ID]
