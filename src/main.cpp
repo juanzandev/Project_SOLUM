@@ -3,29 +3,63 @@
 #include <SD.h>
 #include <SPI.h>
 #include <sdi12functions.h>
+#include <StackArray.h>
+#include <show_menu.h>
 
 #define SERIAL_BAUD 115200 // The baud rate for the output serial port
 
+enum Menu
+{
+	MAIN_MENU,
+	SENSOR_LIST
+};
+
+Menu currentMenu = SENSOR_LIST;
+
+StackArray<Menu> menuStack;
+
+void displayMenu(char currentMenu)
+{
+	switch (currentMenu)
+	{
+	case MAIN_MENU:
+		showMainMenu();
+		break;
+	case SENSOR_LIST:
+		showSensorListMenu();
+		break;
+	}
+}
+void waitForUserInput()
+{
+	while (!Serial.available())
+	{
+	}
+}
+void handleUserInput()
+{
+	if (Serial.available())
+	{
+		int userInput = Serial.parseInt();
+	}
+}
 int main(void)
 {
 	init();
-	#if defined(USBCON)
-		USBDevice.attach();
-	#endif
-	
+#if defined(USBCON)
+	USBDevice.attach();
+#endif
+
 	Serial.begin(SERIAL_BAUD);
 	while (!Serial)
 		;
-	sdi12_start();
-	Serial.println();
-	Serial.println();
-	Serial.println("Time Elapsed (s), Sensor Address and ID, Volumentric Water Contect, Soil Temperature C, Soil Permitivity, Soil bulk EC in uS/cm, Soil pore water EC in us/cm.");
-	Serial.println("-------------------------------------------------------------------------------");
+	menuStack.push(MAIN_MENU);
 
 	while (true)
 	{
-		sdi12_measurement();
-		delay(5000);
+		displayMenu(currentMenu);
+		waitForUserInput();
+		handleUserInput();
 	}
 }
 // PSEUDO CODE
