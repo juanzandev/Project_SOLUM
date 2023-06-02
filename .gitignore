@@ -3,4 +3,6 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-dir_to_ignore/.vscode
+.vscode/
+test/
+platformio.ini

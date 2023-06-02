@@ -1,20 +1,46 @@
 #include <Arduino.h>
+#include <LiquidCrystal_I2C.h>
 
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+void initializeLCD()
+{
+    lcd.init();
+    lcd.backlight();
+}
 void showMainMenu()
 {
-    Serial.println("1. Sensor List");
-    Serial.println("2. Add Sensor");
-    Serial.println("3. Remove Sensor");
-    Serial.println("4. Settings");
+    initializeLCD();
+    lcd.setCursor(0, 0);
+    lcd.print("Sensor List");
+    Serial.println("Sensor List");
+    lcd.setCursor(0, 1);
+    lcd.print("Add Sensor");
+    Serial.println("Add Sensor");
+    lcd.setCursor(0, 2);
+    lcd.print("Remove Sensor");
+    Serial.println("Remove Sensor");
+    lcd.setCursor(0, 3);
+    lcd.print("Settings");
+    Serial.println("Settings");
 }
 
 // SENSOR LIST PATH
 void showSensorListMenu()
 {
-    Serial.println("1. Soil Moisture");
-    Serial.println("2. Soil Temperature");
-    Serial.println("3. Wind Speed");
-    Serial.println("4. Water Table");
+    initializeLCD();
+    lcd.setCursor(0, 0);
+    lcd.print("Soil Moisture");
+    Serial.println("Soil Moisture");
+    lcd.setCursor(0, 1);
+    lcd.print("Soil Temperature");
+    Serial.println("Soil Temperature");
+    lcd.setCursor(0, 2);
+    lcd.print("Wind Speed");
+    Serial.println("Wind Speed");
+    lcd.setCursor(0, 3);
+    lcd.print("Water Table");
+    Serial.println("Water Table");
 }
 void showSensorList()
 {

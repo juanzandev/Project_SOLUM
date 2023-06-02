@@ -5,42 +5,194 @@
 #include <sdi12functions.h>
 #include <StackArray.h>
 #include <show_menu.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <displayMenu.h>
 
 #define SERIAL_BAUD 115200 // The baud rate for the output serial port
-
+#define CS_PIN 4		   // Change this to match your SD card CS pin
+const int buttons = A0;
 enum Menu
 {
 	MAIN_MENU,
-	SENSOR_LIST
+	SENSOR_CATEGORIES,
+	SENSOR_LIST,
+	SENSOR_CONFIG,
+	SENSOR_SUPPORTED,
+	ADD_SENSOR_OPTIONS,
+	ADD_SENSOR_STEPS,
+	ADDING_SENSOR,
+	SENSOR_ADD_SUCCESS,
+	SENSOR_ADD_FAIL,
+	SENSOR_ACTIVE,
+	SENSOR_REMOVE_CONFIRM,
+	SENSOR_REMOVE_SUCCESS,
+	SENSOR_REMOVE_FAIL,
+	SETTINGS_MENU,
+	BATTERY_MENU,
+	BATTERY_SAVING_CONFIRM,
+	BATTERY_SAVING_ACTIVE,
+	PROFILE_MENU,
+	PROFILE_SAVING,
+	PROFILE_SAVE,
+	PROFILE_DELETE_CONFIRM,
+	PROFILE_DELETE,
+	PROFILE_OPTIONS_MENU,
+	PROFILE_LIST,
+	PROFILE_SELECT,
+	PROFILE_EXPORT,
+	PROFILE_EXPORT_SUCCESS,
+	PROFILE_FOUND_LIST,
+	PROFILE_FOUND_SINGLE,
+	PROFILE_FOUND_CONFIRMATION,
+	PROFILE_IMPORT,
+	CONNECTIVITY_MENU,
+	NODE_CONNECT_MENU,
+	NODE_SEARCH,
+	NODE_FOUND_LIST,
+	NODE_PAIR_MENU,
+	NODE_LOCATION_REQUEST,
+	NODE_PAIR_CONFIRMATION,
+	NODE_PAIR_RESULT,
+	STATION_CONNECT_MENU,
+	STATION_CONNECT_SEARCH,
+	STATION_FOUND,
+	STATION_CONNECT,
+	STATION_CONNECT_SUCCESS,
+	STATION_PAIRED,
+	STATION_DISCONNECT_CONFIRM,
+	STATION_DISCONNECT_SUCCESS,
+	STATION_OPTIONS_MENU,
+	CHIP_MENU,
+	CHIP_INTERNET_CHECK,
+	CHIP_INTERNET_RESULT
 };
+const char *menuNames[] = {
+	"MAIN_MENU",
+	"SENSOR_CATEGORIES",
+	"SENSOR_LIST",
+	"SENSOR_CONFIG",
+	"SENSOR_SUPPORTED",
+	"ADD_SENSOR_OPTIONS",
+	"ADD_SENSOR_STEPS",
+	"ADDING_SENSOR",
+	"SENSOR_ADD_SUCCESS",
+	"SENSOR_ADD_FAIL",
+	"SENSOR_ACTIVE",
+	"SENSOR_REMOVE_CONFIRM",
+	"SENSOR_REMOVE_SUCCESS",
+	"SENSOR_REMOVE_FAIL",
+	"SETTINGS_MENU",
+	"BATTERY_MENU",
+	"BATTERY_SAVING_CONFIRM",
+	"BATTERY_SAVING_ACTIVE",
+	"PROFILE_MENU",
+	"PROFILE_SAVING",
+	"PROFILE_SAVE",
+	"PROFILE_DELETE_CONFIRM",
+	"PROFILE_DELETE",
+	"PROFILE_OPTIONS_MENU",
+	"PROFILE_LIST",
+	"PROFILE_SELECT",
+	"PROFILE_EXPORT",
+	"PROFILE_EXPORT_SUCCESS",
+	"PROFILE_FOUND_LIST",
+	"PROFILE_FOUND_SINGLE",
+	"PROFILE_FOUND_CONFIRMATION",
+	"PROFILE_IMPORT",
+	"CONNECTIVITY_MENU",
+	"NODE_CONNECT_MENU",
+	"NODE_SEARCH",
+	"NODE_FOUND_LIST",
+	"NODE_PAIR_MENU",
+	"NODE_LOCATION_REQUEST",
+	"NODE_PAIR_CONFIRMATION",
+	"NODE_PAIR_RESULT",
+	"STATION_CONNECT_MENU",
+	"STATION_CONNECT_SEARCH",
+	"STATION_FOUND",
+	"STATION_CONNECT",
+	"STATION_CONNECT_SUCCESS",
+	"STATION_PAIRED",
+	"STATION_DISCONNECT_CONFIRM",
+	"STATION_DISCONNECT_SUCCESS",
+	"STATION_OPTIONS_MENU",
+	"CHIP_MENU",
+	"CHIP_INTERNET_CHECK",
+	"CHIP_INTERNET_RESULT"
+	};
 
-Menu currentMenu = SENSOR_LIST;
+Menu currentMenu = MAIN_MENU;
 
 StackArray<Menu> menuStack;
 
-void displayMenu(char currentMenu)
+char waitForUserInput()
 {
-	switch (currentMenu)
+
+	while (Serial.available() == 0)
 	{
-	case MAIN_MENU:
-		showMainMenu();
+		int buttonVoltage = analogRead(buttons);
+		if (buttonVoltage > 50)
+		{
+			if (buttonVoltage < 650)
+			{
+				return 'q';
+			}
+			else if (buttonVoltage < 740)
+			{
+				return '1';
+			}
+			else if (buttonVoltage < 810)
+			{
+				return '2';
+			}
+			else if (buttonVoltage < 895)
+			{
+				return '3';
+			}
+			else
+			{
+				return '4';
+			}
+		}
+	}
+	return Serial.read();
+}
+void handleUserInput(char input)
+{
+	char userInput = input;
+	Serial.print("handleUserInput: ");
+	Serial.println(userInput);
+	switch (userInput)
+	{
+	case '1':
+		switch (currentMenu)
+		{
+		case MAIN_MENU:
+			currentMenu = SENSOR_LIST;
+			menuStack.push(SENSOR_LIST);
+			break;
+		default:
+			break;
+		}
 		break;
-	case SENSOR_LIST:
-		showSensorListMenu();
+	case 'q':
+		if (menuStack.peek() != MAIN_MENU)
+		{
+			menuStack.pop();
+			currentMenu = menuStack.peek();
+			break;
+		}
+		break;
+	default:
 		break;
 	}
 }
-void waitForUserInput()
+void flushSerialBuffer()
 {
-	while (!Serial.available())
+	while (Serial.available() > 0)
 	{
-	}
-}
-void handleUserInput()
-{
-	if (Serial.available())
-	{
-		int userInput = Serial.parseInt();
+		Serial.read();
 	}
 }
 int main(void)
@@ -54,12 +206,23 @@ int main(void)
 	while (!Serial)
 		;
 	menuStack.push(MAIN_MENU);
-
+	if (!SD.begin(CS_PIN))
+	{
+		Serial.println("Card failed, or not present");
+		while (1)
+			;
+	}
+	Serial.println("Card initialized.");
 	while (true)
 	{
-		displayMenu(currentMenu);
-		waitForUserInput();
-		handleUserInput();
+		const char *menuName = menuNames[currentMenu];
+		displayMenu(menuName);
+		char userInput;
+		userInput = waitForUserInput();
+		flushSerialBuffer();
+		Serial.print("waitForUserInput: ");
+		Serial.println(userInput);
+		handleUserInput(userInput);
 	}
 }
 // PSEUDO CODE
