@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <SDI12.h>
-#include <SD.h>
+#include <SdFat.h>
 #include <sdi12functions.h>
 
 File file;
