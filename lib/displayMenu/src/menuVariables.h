@@ -74,6 +74,6 @@ struct MenuTransition
     Menu newMenu;
 };
 
-extern MenuTransition transitions[]; // Only declare the array here
+// extern MenuTransition transitions[]; // Only declare the array here
 
 #endif // MENU_H
